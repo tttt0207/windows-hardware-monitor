@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Windows 本地硬件监控</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+    <main class="dashboard">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">LOCAL SYSTEM MONITOR</p>
+                <h1>硬件状态</h1>
+                <p class="subtitle">当前运行后端的 Windows 电脑</p>
+            </div>
+            <div class="connection">
+                <span id="status-dot" class="status-dot"></span>
+                <span id="connection-text">正在连接</span>
+            </div>
+        </header>
+
+        <section class="summary-grid">
+            <article class="metric-card">
+                <div class="card-heading">
+                    <div>
+                        <span class="card-label">CPU</span>
+                        <h2>处理器使用率</h2>
+                    </div>
+                    <span id="cpu-value" class="metric-value">--%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="cpu-bar" class="progress-bar cyan"></div>
+                </div>
+                <p id="cpu-cores" class="card-footnote">正在读取核心信息…</p>
+            </article>
+
+            <article class="metric-card">
+                <div class="card-heading">
+                    <div>
+                        <span class="card-label">MEMORY</span>
+                        <h2>内存使用率</h2>
+                    </div>
+                    <span id="memory-value" class="metric-value">--%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="memory-bar" class="progress-bar violet"></div>
+                </div>
+                <div class="stat-row">
+                    <span>已用 <strong id="memory-used">-- GiB</strong></span>
+                    <span>可用 <strong id="memory-available">-- GiB</strong></span>
+                    <span>总量 <strong id="memory-total">-- GiB</strong></span>
+                </div>
+            </article>
+        </section>
+
+        <section class="gpu-section">
+            <div class="section-heading">
+                <div>
+                    <span class="card-label">NVIDIA GPU</span>
+                    <h2>显卡状态</h2>
+                </div>
+                <span id="last-updated" class="last-updated">等待数据</span>
+            </div>
+
+            <div id="gpu-unavailable" class="empty-state hidden">
+                <div class="empty-icon">GPU</div>
+                <h3 id="gpu-empty-title">未检测到 NVIDIA 显卡</h3>
+                <p id="gpu-empty-message">CPU 和内存监控仍会正常工作。</p>
+            </div>
+
+            <div id="gpu-list" class="gpu-list"></div>
+        </section>
+    </main>
+
+    <template id="gpu-template">
+        <article class="gpu-panel">
+            <div class="gpu-title-row">
+                <div>
+                    <span class="gpu-index"></span>
+                    <h3 class="gpu-name">不可用</h3>
+                </div>
+                <div class="temperature">
+                    <span class="temperature-label">温度</span>
+                    <strong class="temperature-value">不可用</strong>
+                </div>
+            </div>
+
+            <div class="gpu-metrics">
+                <div class="mini-metric">
+                    <div class="mini-heading">
+                        <span>GPU 使用率</span>
+                        <strong class="gpu-usage-value">不可用</strong>
+                    </div>
+                    <div class="progress-track compact">
+                        <div class="gpu-usage-bar progress-bar cyan"></div>
+                    </div>
+                </div>
+                <div class="mini-metric">
+                    <div class="mini-heading">
+                        <span>显存使用率</span>
+                        <strong class="vram-usage-value">不可用</strong>
+                    </div>
+                    <div class="progress-track compact">
+                        <div class="vram-usage-bar progress-bar violet"></div>
+                    </div>
+                    <p class="vram-detail">已用 不可用 / 总量 不可用</p>
+                </div>
+            </div>
+
+            <div class="process-section">
+                <div class="process-heading">
+                    <h4>GPU 进程</h4>
+                    <span class="process-count">0 个进程</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>进程名称</th>
+                                <th>PID</th>
+                                <th>显存占用</th>
+                            </tr>
+                        </thead>
+                        <tbody class="process-list"></tbody>
+                    </table>
+                    <p class="no-processes">当前没有可读取的 GPU 进程</p>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+</body>
+</html>
